@@ -1,0 +1,6 @@
+framework module Pods_Github_Match {
+  umbrella header "Pods-Github Match-umbrella.h"
+
+  export *
+  module * { export * }
+}

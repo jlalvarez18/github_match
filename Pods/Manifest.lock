@@ -1,0 +1,54 @@
+PODS:
+  - Alamofire (3.3.0)
+  - AlamofireImage (2.4.0):
+    - Alamofire (~> 3.3)
+  - DateTools (1.7.0)
+  - DZNEmptyDataSet (1.7.3)
+  - OcticonsIOS (0.0.2)
+  - OMGHTTPURLRQ (3.1.1):
+    - OMGHTTPURLRQ/RQ (= 3.1.1)
+  - OMGHTTPURLRQ/FormURLEncode (3.1.1)
+  - OMGHTTPURLRQ/RQ (3.1.1):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/UserAgent (3.1.1)
+  - PromiseKit (3.1.0):
+    - PromiseKit/Foundation (= 3.1.0)
+    - PromiseKit/QuartzCore (= 3.1.0)
+    - PromiseKit/UIKit (= 3.1.0)
+  - PromiseKit/CorePromise (3.1.0)
+  - PromiseKit/Foundation (3.1.0):
+    - OMGHTTPURLRQ (~> 3.1.0)
+    - PromiseKit/CorePromise
+  - PromiseKit/QuartzCore (3.1.0):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (3.1.0):
+    - PromiseKit/CorePromise
+  - SnapKit (0.20.0)
+  - SVProgressHUD (2.0)
+  - TSMarkdownParser (2.0.2)
+
+DEPENDENCIES:
+  - Alamofire
+  - AlamofireImage
+  - DateTools
+  - DZNEmptyDataSet
+  - OcticonsIOS
+  - PromiseKit
+  - SnapKit
+  - SVProgressHUD
+  - TSMarkdownParser
+
+SPEC CHECKSUMS:
+  Alamofire: 9054db4a1b1ca9e363223183e01cea380159a27c
+  AlamofireImage: 87408b652e0f5ae5fe364035f15aea8b9b24c77e
+  DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
+  DZNEmptyDataSet: dd7cca17c1d07dfa78956859b1e70a52505678ef
+  OcticonsIOS: 845ce2794c2837cf688049c4782467ef0c3c949d
+  OMGHTTPURLRQ: 633f98ee745aeda02345935a52eec1784cddb589
+  PromiseKit: 7ed2a3fc5217695305a55a8c47cb3a17ff5fde0d
+  SnapKit: 5fce3c1bbbf1fbd31de9aa92f33eb9fa03f15650
+  SVProgressHUD: e9e7c893686a20da55a28015ed384d9425e15479
+  TSMarkdownParser: a15e7c43c5720730c73bcc7408d4fb6802b3724e
+
+COCOAPODS: 0.39.0
