@@ -65,6 +65,9 @@ class RepoDetailsViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return 2
     }
+    
+    static let readMeIcon = UIImage.imageWithIcon(icon: .Book, iconColor: UIColor.darkGrayColor(), size: CGSize(width: 20, height: 20))
+    static let issuesIcon = UIImage .imageWithIcon(icon: .IssueOpened, iconColor: UIColor.darkGrayColor(), size: CGSize(width: 20, height: 20))
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(BasicCellID, forIndexPath: indexPath)
@@ -72,8 +75,10 @@ class RepoDetailsViewController: UITableViewController {
         
         switch indexPath.row {
         case 0:
+            cell.imageView?.image = RepoDetailsViewController.readMeIcon
             cell.textLabel?.text = "View Readme"
         case 1:
+            cell.imageView?.image = RepoDetailsViewController.issuesIcon
             cell.textLabel?.text = "View Issues"
         default:
             return UITableViewCell()

@@ -38,7 +38,9 @@ class MainListViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        SVProgressHUD.show()
+        if publicRepos.isEmpty {
+            SVProgressHUD.show()
+        }
         
         firstly {
             GitHub.getTrendingThisWeek()
