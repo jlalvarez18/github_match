@@ -77,11 +77,20 @@ struct IssueViewModel {
             }
         }
         
-        title = NSAttributedString(string: issue.title)
+        let titleAttr = [
+            NSForegroundColorAttributeName: UIColor.darkGrayColor(),
+            NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        ]
+        
+        title = NSAttributedString(string: issue.title, attributes: titleAttr)
         
         let relativeDateString = issue.createdAt.timeAgoSinceNow()
         let subtitleString = "#\(issue.number) opened \(relativeDateString) by \(issue.creator.username)"
         
-        subtitle = NSAttributedString(string: subtitleString, attributes: [NSForegroundColorAttributeName: UIColor.lightGrayColor()])
+        let subAtt = [
+            NSForegroundColorAttributeName: UIColor.lightGrayColor(),
+            NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        ]
+        subtitle = NSAttributedString(string: subtitleString, attributes: subAtt)
     }
 }

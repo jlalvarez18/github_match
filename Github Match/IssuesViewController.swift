@@ -22,7 +22,7 @@ class IssuesViewController: UITableViewController {
     init(repo: Repo) {
         self.repo = repo
         
-        super.init(style: .Grouped)
+        super.init(style: .Plain)
         
         title = "Issues"
     }
@@ -34,7 +34,13 @@ class IssuesViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.tableFooterView = UIView()
         tableView.emptyDataSetSource = self
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 80
+        
+        tableView.registerClass(IssueCell.self, forCellReuseIdentifier: IssueCell.CellID)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -68,21 +74,13 @@ class IssuesViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: UITableViewCell
-        
-        if let _cell = tableView.dequeueReusableCellWithIdentifier(BasicCellID) {
-            cell = _cell
-        } else {
-            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: BasicCellID)
-        }
+        let cell = tableView.dequeueReusableCellWithIdentifier(IssueCell.CellID, forIndexPath: indexPath) as! IssueCell
         
         let issue = issues[indexPath.row]
         
         let issueViewModel = IssueViewModel(issue: issue)
         
-        cell.imageView?.image = issueViewModel.icon
-        cell.textLabel?.attributedText = issueViewModel.title
-        cell.detailTextLabel?.attributedText = issueViewModel.subtitle
+        cell.setupWith(issueViewModel)
 
         return cell
     }

@@ -12,3 +12,12 @@ enum Image {
     case UImage(UIImage)
     case URL(NSURL)
 }
+
+extension UIView {
+    
+    func addSubviewIfNeeded(subview: UIView) {
+        if subview.superview != self {
+            addSubview(subview)
+        }
+    }
+}
