@@ -16,155 +16,139 @@ class GitHub {
         case JSONParseError
     }
     
-    class func getTrendingThisWeek() -> Promise<[Repo]> {
-        return Promise<[Repo]>(resolvers: { (fulfill, reject) in
-            Alamofire.request(GitHubRouter.TrendingThisWeek)
-                .validate()
-                .responseJSON { (response) in
-                    switch response.result {
-                    case .Success(let object):
-                        guard let jsonArray = object as? JSONDict else {
-                            reject(Error.JSONParseError)
-                            return
-                        }
-                        
-                        let items = jsonArray.jsonDictArrayValueFor("items")
-                        let repos = items.map { Repo(json: $0) }
-                        
-                        fulfill(repos)
-                    case .Failure(let error):
-                        reject(error)
-                    }
-            }
+    class func getTrendingThisWeek() -> (request: Request, promise: Promise<[Repo]>) {
+        let result = performJSONDictRequest(GitHubRouter.TrendingThisWeek)
+        
+        let promise = result.1.then({ (dict) -> [Repo] in
+            let items = dict.jsonDictArrayValueFor("items")
+            let repos = items.map { Repo(json: $0) }
+            
+            return repos
         })
+        
+        return (result.0, promise)
     }
     
-    class func getPublicReposFor(user: User) -> Promise<[Repo]> {
-        return Promise<[Repo]>(resolvers: { (fulfill, reject) in
-            Alamofire.request(GitHubRouter.PublicRepos(user: user))
-                .validate()
-                .responseJSON { (response) in
-                    switch response.result {
-                    case .Success(let object):
-                        guard let jsonArray = object as? JSONArray else {
-                            reject(Error.JSONParseError)
-                            return
-                        }
-                        
-                        let repos = jsonArray.map { Repo(json: $0) }
-                        
-                        fulfill(repos)
-                    case .Failure(let error):
-                        reject(error)
-                    }
-            }
+    class func getPublicReposFor(user: User) -> (request: Request, promise: Promise<[Repo]>) {
+        let result = performJSONArrayRequest(GitHubRouter.PublicRepos(user: user))
+        
+        let promise = result.1.then({ (objects) -> [Repo] in
+             let repos = objects.map { Repo(json: $0) }
+            
+            return repos
         })
+        
+        return (result.0, promise)
     }
     
-    class func getRepoDetails(repo: Repo) -> Promise<Repo> {
-        return Promise<Repo>(resolvers: { (fulfill, reject) in
-            Alamofire.request(GitHubRouter.RepoDetails(repo: repo))
-                .validate()
-                .responseJSON { (response) in
-                    switch response.result {
-                    case .Success(let object):
-                        guard let json = object as? JSONDict else {
-                            reject(Error.JSONParseError)
-                            return
-                        }
-                        
-                        let repo = Repo(json: json)
+    class func getRepoDetails(repo: Repo) -> (request: Request, promise: Promise<Repo>) {
+        let result = performJSONDictRequest(GitHubRouter.RepoDetails(repo: repo))
+        
+        let promise = result.1.then({ (dict) -> Repo in
+            let repo = Repo(json: dict)
+            
+            return repo
+        })
+        
+        return (result.0, promise)
+    }
+    
+    class func getRepoReadme(repo: Repo) -> (request: Request, promise: Promise<ReadMe>) {
+        let result = performJSONDictRequest(GitHubRouter.RepoReadme(repo: repo))
+        
+        let promise = result.1.then({ (dict) -> ReadMe in
+            let readme = ReadMe(json: dict)
+            
+            return readme
+        })
+        
+        return (result.0, promise)
+    }
+    
+    class func getRepoIssues(repo: Repo) -> (request: Request, promise: Promise<[Issue]>) {
+        let result = performJSONArrayRequest(GitHubRouter.RepoIssues(repo: repo))
+        
+        let promise = result.1.then({ (objects) -> [Issue] in
+            let issues = objects.map { Issue(json: $0) }
+            
+            return issues
+        })
+        
+        return (result.0, promise)
+    }
+    
+    class func searchForUsers(query: String) -> (request: Request, promise: Promise<[User]>) {
+        let result = performJSONDictRequest(GitHubRouter.UserSearch(query: query))
+        
+        let promise = result.1.then { (dict) -> [User] in
+            let items = dict.jsonDictArrayValueFor("items")
+            let users = items.map { User(json: $0) }
+            
+            return users
+        }
+        
+        return (result.0, promise)
+    }
+    
+    class func searchForRepos(query: String) -> (request: Request, promise: Promise<[Repo]>) {
+        let result = performJSONDictRequest(GitHubRouter.RepoSearch(query: query))
+        
+        let promise = result.1.then { (dict) -> [Repo] in
+            let items = dict.jsonDictArrayValueFor("items")
+            let repos = items.map { Repo(json: $0) }
+            
+            return repos
+        }
+        
+        return (result.0, promise)
+    }
+}
 
-                        fulfill(repo)
-                    case .Failure(let error):
-                        reject(error)
-                    }
+private extension GitHub {
+    
+    class func performJSONDictRequest(endpoint: GitHubRouter) -> (Request, Promise<JSONDict>) {
+        let result = performRequest(endpoint)
+        
+        let promise = result.1.then { (object) -> JSONDict in
+            guard let json = object as? JSONDict else {
+                throw Error.JSONParseError
             }
-        })
-    }
-    
-    class func searchForUsers(query: String, completion: ([User]?, NSError?) -> Void) -> Request {
-        return Alamofire.request(GitHubRouter.UserSearch(query: query))
-            .validate()
-            .responseJSON { (response) in
-                switch response.result {
-                case .Success(let object):
-                    guard let json = object as? JSONDict else {
-                        return
-                    }
-                    
-                    let items = json.jsonDictArrayValueFor("items")
-                    let users = items.map { User(json: $0) }
-                    
-                    completion(users, nil)
-                case .Failure(let error):
-                    completion(nil, error)
-                }
+            
+            return json
         }
+        
+        return (result.0, promise)
     }
     
-    class func searchForRepos(query: String, completion: ([Repo]?, NSError?) -> Void) -> Request {
-        return Alamofire.request(GitHubRouter.RepoSearch(query: query))
-            .validate()
-            .responseJSON { (response) in
-                switch response.result {
-                case .Success(let object):
-                    guard let json = object as? JSONDict else {
-                        return
-                    }
-                    
-                    let items = json.jsonDictArrayValueFor("items")
-                    let repos = items.map { Repo(json: $0) }
-                    
-                    completion(repos, nil)
-                case .Failure(let error):
-                    completion(nil, error)
-                }
+    class func performJSONArrayRequest(endpoint: GitHubRouter) -> (Request, Promise<JSONArray>) {
+        let result = performRequest(endpoint)
+        
+        let promise = result.1.then { (object) -> JSONArray in
+            guard let json = object as? JSONArray else {
+                throw Error.JSONParseError
+            }
+            
+            return json
         }
+        
+        return (result.0, promise)
     }
     
-    class func getRepoReadme(repo: Repo) -> Promise<ReadMe> {
-        return Promise<ReadMe>(resolvers: { (fulfill, reject) in
-            Alamofire.request(GitHubRouter.RepoReadme(repo: repo))
-            .validate()
-            .responseJSON(completionHandler: { (response) in
+    class func performRequest(endpoint: GitHubRouter) -> (Request, Promise<AnyObject>) {
+        let request = Alamofire.request(endpoint)
+        
+        let promise = Promise<AnyObject>(resolvers: { (fulfill, reject) in
+            request.validate().responseJSON { (response) in
                 switch response.result {
                 case .Success(let object):
-                    guard let json = object as? JSONDict else {
-                        reject(Error.JSONParseError)
-                        return
-                    }
-                    
-                    let readme = ReadMe(json: json)
-                    
-                    fulfill(readme)
+                    fulfill(object)
                 case .Failure(let error):
                     reject(error)
                 }
-            })
-        })
-    }
-    
-    class func getRepoIssues(repo: Repo) -> Promise<[Issue]> {
-        return Promise<[Issue]>(resolvers: { (fulfill, reject) in
-            Alamofire.request(GitHubRouter.RepoIssues(repo: repo))
-                .validate()
-                .responseJSON { (response) in
-                    switch response.result {
-                    case .Success(let object):
-                        guard let jsonArray = object as? JSONArray else {
-                            reject(Error.JSONParseError)
-                            return
-                        }
-                        
-                        let issues = jsonArray.map { Issue(json: $0) }
-                        
-                        fulfill(issues)
-                    case .Failure(let error):
-                        reject(error)
-                    }
             }
         })
+        
+        return (request, promise)
     }
 }
 

@@ -39,7 +39,7 @@ class UserReposViewController: UITableViewController {
         SVProgressHUD.show()
         
         firstly {
-            GitHub.getPublicReposFor(user)
+            GitHub.getPublicReposFor(user).promise
         }.then { (repos) -> Void in
             self.publicRepos = repos
             

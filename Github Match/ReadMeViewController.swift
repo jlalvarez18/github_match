@@ -53,7 +53,7 @@ class ReadMeViewController: UIViewController {
         SVProgressHUD.show()
         
         firstly {
-            GitHub.getRepoReadme(repo)
+            GitHub.getRepoReadme(repo).promise
         }.then { (readme) -> Void in
             if let attributedText = readme.attributedValue {
                 self.textView.attributedText = attributedText

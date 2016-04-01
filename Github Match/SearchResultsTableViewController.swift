@@ -62,14 +62,13 @@ class SearchResultsTableViewController: UITableViewController {
         
         switch scope {
         case .Users:
-            searchRequest = GitHub.searchForUsers(text, completion: { (users, error) in
+            let result = GitHub.searchForUsers(text)
+            
+            searchRequest = result.request
+            
+            result.promise.then({ (users) -> Void in
                 defer {
                     self.searchRequest = nil
-                }
-                
-                guard let users = users else {
-                    print(error)
-                    return
                 }
                 
                 self.searchItems = users.map { SearchItem(user: $0, scope: scope) }
@@ -77,14 +76,13 @@ class SearchResultsTableViewController: UITableViewController {
                 self.tableView.reloadData()
             })
         case .Repos:
-            searchRequest = GitHub.searchForRepos(text, completion: { (repos, error) in
+            let result = GitHub.searchForRepos(text)
+            
+            searchRequest = result.request
+            
+            result.promise.then({ (repos) -> Void in
                 defer {
                     self.searchRequest = nil
-                }
-                
-                guard let repos = repos else {
-                    print(error)
-                    return
                 }
                 
                 self.searchItems = repos.map { SearchItem(repo: $0, scope: scope) }

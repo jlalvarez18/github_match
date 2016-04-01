@@ -43,7 +43,7 @@ class MainListViewController: UITableViewController {
         }
         
         firstly {
-            GitHub.getTrendingThisWeek()
+            GitHub.getTrendingThisWeek().promise
         }.then { (repos) -> Void in
             self.publicRepos = repos
             

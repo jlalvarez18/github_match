@@ -49,7 +49,7 @@ class IssuesViewController: UITableViewController {
         SVProgressHUD.show()
         
         firstly {
-            GitHub.getRepoIssues(repo)
+            GitHub.getRepoIssues(repo).promise
         }.then { (issues) -> Void in
             self.issues = issues
             

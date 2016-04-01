@@ -42,7 +42,7 @@ class RepoDetailsViewController: UITableViewController {
         SVProgressHUD.show()
         
         firstly {
-            GitHub.getRepoDetails(repo)
+            GitHub.getRepoDetails(repo).promise
         }.then { (repo) -> Void in
             self.repo = repo
             
